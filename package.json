@@ -1,0 +1,26 @@
+{
+  "name": "data-trails",
+  "version": "0.0.1",
+  "description": "Railway oriented programming building blocks.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frostium-dev/data-trails.git"
+  },
+  "keywords": [
+    "railway"
+  ],
+  "author": "Emre Ayaz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/frostium-dev/data-trails/issues"
+  },
+  "homepage": "https://github.com/frostium-dev/data-trails#readme",
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}
