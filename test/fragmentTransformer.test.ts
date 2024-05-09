@@ -1,50 +1,9 @@
 import { expect, expectTypeOf, test } from 'vitest';
-import { fragmentTransformer, isFragmentError } from '../src/modules/fragment/fragmentTransformer';
+import { fragmentTransformer } from '../src/modules/fragment/fragmentTransformer';
 import { FragmentError, FragmentErrorCodes, FragmentResult, FragmentSuccess } from '../src/modules/types/fragmentTypes';
+import { isFragmentError } from '../src/modules/utils/isFragmentError';
+import { TestObject, caughtFragmentError, nullFragmentError, nullOrUndefinedFunction, numberReturn, objectReturn, stringReturn, throwFunction, undefinedFragmentError } from './utils';
 
-
-function nullOrUndefinedFunction(randomInt: number) {
-    return randomInt < 1 ? undefined : null;
-}
-
-function throwFunction() {
-    throw new Error("error");
-}
-
-function stringReturn() {
-    return "test";
-}
-
-function numberReturn() {
-    return 42;
-}
-
-type TestObject = { a: string, b: number; };
-
-function objectReturn(): TestObject {
-    return { a: "test", b: 42 };
-}
-
-const nullFragmentError: FragmentError = {
-    code: FragmentErrorCodes.NullOrUndefinedResult,
-    error: "Fragment could not compute expected result. Transformed function returned null",
-    stack: `${Error().stack}`.slice(0, 500),
-    message: ""
-};
-
-const undefinedFragmentError: FragmentError = {
-    code: FragmentErrorCodes.NullOrUndefinedResult,
-    error: "Fragment could not compute expected result. Transformed function returned undefined",
-    stack: `${Error().stack}`.slice(0, 500),
-    message: ""
-};
-
-const caughtFragmentError: FragmentError = {
-    code: FragmentErrorCodes.NullOrUndefinedResult,
-    error: "Fragment could not compute expected result. Transformed function threw",
-    stack: `${Error().stack}`.slice(0, 500),
-    message: ""
-};
 
 test('Fragment Catch Null', () => {
     nullFragmentError.message = "Null Error Test";

@@ -1,6 +1,6 @@
-import { Fragment, FragmentError, FragmentErrorCodes, FragmentSuccess } from "../types/fragmentTypes";
+import { Callable, Fragment, FragmentError, FragmentErrorCodes, FragmentSuccess } from "../types/fragmentTypes";
 
-export function fragmentTransformer<T extends (...args: any) => any>(
+export function fragmentTransformer<T extends Callable>(
     fn: T, onErrorMessage: string, isSafe = false): Fragment<T> {
     return (...args: Parameters<T>) => {
         let result;
@@ -34,6 +34,3 @@ export function fragmentTransformer<T extends (...args: any) => any>(
 };
 
 
-export function isFragmentError<T>(result: FragmentSuccess<T> | FragmentError): result is FragmentError {
-    return (result as FragmentError).code !== undefined;
-}
