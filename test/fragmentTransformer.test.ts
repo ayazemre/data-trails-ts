@@ -47,13 +47,13 @@ test('Fragment String Result', () => {
 });
 
 test('Fragment Number Result', () => {
-    const fragment = fragmentTransformer(numberReturn, "Could not compute a string");
+    const fragment = fragmentTransformer(numberReturn, "Could not compute a number");
     const result = fragment();
     expect(result).toBe(42);
 });
 
 test('Fragment Object Result', () => {
-    const fragment = fragmentTransformer(objectReturn, "Could not compute a string");
+    const fragment = fragmentTransformer(objectReturn, "Could not compute a object");
     const result = fragment();
     expect(result).toStrictEqual({ a: "test", b: 42 });
     expectTypeOf(result).toEqualTypeOf<FragmentResult<TestObject, FragmentError>>();

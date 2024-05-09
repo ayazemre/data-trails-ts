@@ -62,13 +62,13 @@ test('AsyncFragment String Result', async () => {
 });
 
 test('AsyncFragment Number Result', async () => {
-    const fragment = asyncFragmentTransformer(asyncNumberReturn, "Could not compute a string");
+    const fragment = asyncFragmentTransformer(asyncNumberReturn, "Could not compute a number");
     const result = await fragment();
     expect(result).toBe(42);
 });
 
 test('AsyncFragment Object Result', async () => {
-    const fragment = asyncFragmentTransformer(asyncObjectReturn, "Could not compute a string");
+    const fragment = asyncFragmentTransformer(asyncObjectReturn, "Could not compute a object");
     const result = await fragment();
     expect(result).toStrictEqual({ a: "test", b: 42 });
     expectTypeOf(result).toEqualTypeOf<FragmentResult<TestObject, FragmentError>>();
