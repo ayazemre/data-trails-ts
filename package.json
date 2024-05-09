@@ -1,5 +1,5 @@
 {
-  "name": "data-trails",
+  "name": "data-trails-ts",
   "version": "0.0.1",
   "description": "Railway oriented programming building blocks.",
   "main": "index.js",
