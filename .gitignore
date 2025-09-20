@@ -1,1 +1,10 @@
 node_modules
+dist
+build
+.env
+.vscode
+coverage
+migrations
+temporary
+temp
+.DS_Store
