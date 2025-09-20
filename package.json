@@ -9,7 +9,11 @@
 		"url": "git+https://github.com/frostium-dev/data-trails.git"
 	},
 	"keywords": [
-		"railway"
+		"railway",
+		"oriented",
+		"programming",
+		"result",
+		"data trail"
 	],
 	"author": "Emre Ayaz",
 	"license": "ISC",
