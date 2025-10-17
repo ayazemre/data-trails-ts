@@ -1,9 +1,9 @@
 {
 	"name": "data-trails",
-	"version": "0.3.11",
+	"version": "0.3.12",
 	"description": "Railway oriented programming building blocks.",
-	"main": "src/index.js",
-	"types": "src/index.d.ts",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"type": "module",
 	"author": "Emre Ayaz",
 	"license": "ISC",
@@ -29,7 +29,7 @@
 		"#src/*": "./src/*"
 	},
 	"exports": {
-		".": "./src/index.js"
+		".": "./dist/index.js"
 	},
 	"scripts": {
 		"test": "node --test",
