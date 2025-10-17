@@ -1,0 +1,9 @@
+node_modules
+build
+.env
+.vscode
+coverage
+migrations
+temporary
+temp
+.DS_Store
