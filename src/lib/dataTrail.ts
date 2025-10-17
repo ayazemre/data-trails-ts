@@ -1,4 +1,4 @@
-import { Result } from "./index.ts";
+import { Result } from "../index.ts";
 import type { AsyncDataTrail, AsyncFunction, SyncDataTrail, SyncFunction } from "./types.ts";
 
 export function createSyncTrail<T extends SyncFunction>(entryPoint: T): SyncDataTrail<T> {

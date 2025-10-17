@@ -1,12 +1,12 @@
 {
 	"name": "data-trails",
-	"version": "0.3.1",
+	"version": "0.3.11",
 	"description": "Railway oriented programming building blocks.",
-	"main": "index.js",
+	"main": "src/index.js",
+	"types": "src/index.d.ts",
 	"type": "module",
-	"files": [
-		"dist"
-	],
+	"author": "Emre Ayaz",
+	"license": "ISC",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/ayazemre/data-trails-ts"
@@ -18,14 +18,18 @@
 		"result",
 		"data trail"
 	],
-	"author": "Emre Ayaz",
-	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/frostium-dev/data-trails/issues"
 	},
 	"homepage": "https://github.com/frostium-dev/data-trails#readme",
+	"files": [
+		"dist"
+	],
 	"imports": {
 		"#src/*": "./src/*"
+	},
+	"exports": {
+		".": "./src/index.js"
 	},
 	"scripts": {
 		"test": "node --test",
