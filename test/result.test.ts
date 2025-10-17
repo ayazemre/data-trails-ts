@@ -39,6 +39,20 @@ describe("Result", () => {
 		equal(result.isError(), true);
 	});
 
+	test("Sync Map Error", async () => {
+		const result = Result.sync(() => testFunctionSync({ throws: true }));
+
+		throws(() => result.unwrap());
+		equal(result.unwrapError().message, "Test Error");
+		equal(result.isError(), true);
+
+		const mappedResult = result.mapError((error) => {
+			error.message = "Transformed Error";
+		});
+
+		equal(mappedResult.unwrapError().message, "Transformed Error");
+	});
+
 	test("Sync Null Capture", async () => {
 		const result = Result.sync(() => testFunctionSync({ returns: null }));
 
@@ -71,6 +85,16 @@ describe("Result", () => {
 		throws(() => result.unwrap());
 		equal(result.unwrapError().message, "Test Error");
 		equal(result.isError(), true);
+	});
+
+	test("Async Map Error", async () => {
+		const result = await Result.async(testFunctionAsync({ throws: true }));
+
+		throws(() => result.unwrap());
+		equal(result.unwrapError().message, "Test Error");
+		equal(result.isError(), true);
+		const mappedError = result.mapError((error) => (error.message = "Transformed Error"));
+		equal(mappedError.unwrapError().message, "Transformed Error");
 	});
 
 	test("Async Null Capture", async () => {

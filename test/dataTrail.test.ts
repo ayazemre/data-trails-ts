@@ -1,5 +1,5 @@
 import { describe, test } from "node:test";
-import { DataTrail } from "#src/index.ts";
+import { DataTrail } from "#src/lib/dataTrail.ts";
 import { equal } from "assert";
 
 describe("Data Trail", () => {

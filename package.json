@@ -1,6 +1,6 @@
 {
 	"name": "data-trails",
-	"version": "0.3.13",
+	"version": "0.3.2",
 	"description": "Railway oriented programming building blocks.",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -29,7 +29,8 @@
 		"#src/*": "./src/*"
 	},
 	"exports": {
-		".": "./dist/index.js"
+		".": "./dist/index.js",
+		"./result": "./dist/lib/result.js"
 	},
 	"scripts": {
 		"test": "node --test",

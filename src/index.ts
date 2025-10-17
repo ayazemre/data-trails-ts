@@ -1,11 +1,2 @@
-import { createAsyncTrail, createSyncTrail } from "./lib/dataTrail.ts";
-import { async, sync } from "./lib/result.ts";
-
-export const Result = { async, sync };
-export const DataTrail = { createAsyncTrail, createSyncTrail };
-
-export type Result<T, Error> = {
-	unwrap(): T;
-	unwrapError(): Error;
-	isError(): boolean;
-};
+export * from "./lib/result.ts";
+export * from "./lib/dataTrail.ts";
