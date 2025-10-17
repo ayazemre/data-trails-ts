@@ -3,3 +3,9 @@ import { async, sync } from "./lib/result.ts";
 
 export const Result = { async, sync };
 export const DataTrail = { createAsyncTrail, createSyncTrail };
+
+export type Result<T, Error> = {
+	unwrap(): T;
+	unwrapError(): Error;
+	isError(): boolean;
+};
