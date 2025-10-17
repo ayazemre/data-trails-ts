@@ -2,7 +2,7 @@ name: Publish to NPM
 on:
   workflow_dispatch:
 jobs:
-  run-tests:
+  publish-to-npm:
     runs-on: ubuntu-latest
     permissions:
       contents: read
