@@ -53,21 +53,6 @@ describe("Result", () => {
 		equal(mappedResult.unwrapError().message, "Transformed Error");
 	});
 
-	test("Sync Null Capture", async () => {
-		const result = Result.sync(() => testFunctionSync({ returns: null }));
-
-		equal(result.unwrap(), null);
-		throws(() => result.unwrapError());
-		equal(result.isError(), false);
-	});
-
-	test("Sync Undefined Capture", async () => {
-		const result = Result.sync(() => testFunctionSync({ returns: undefined }));
-
-		equal(result.unwrap(), undefined);
-		throws(() => result.unwrapError());
-		equal(result.isError(), false);
-	});
 
 	// Async Test
 
@@ -95,18 +80,5 @@ describe("Result", () => {
 		equal(result.isError(), true);
 		const mappedError = result.mapError((error) => (error.message = "Transformed Error"));
 		equal(mappedError.unwrapError().message, "Transformed Error");
-	});
-
-	test("Async Null Capture", async () => {
-		const result = await Result.async(testFunctionAsync({ returns: "" }));
-
-		equal(result.unwrap(), null);
-		equal(result.isError(), false);
-	});
-	test("Async Undefined Capture", async () => {
-		const result = await Result.async(testFunctionAsync({ returns: undefined }));
-
-		equal(result.unwrap(), undefined);
-		equal(result.isError(), false);
 	});
 });

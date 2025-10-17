@@ -6,7 +6,7 @@
 	"types": "dist/index.d.ts",
 	"type": "module",
 	"author": "Emre Ayaz",
-	"license": "ISC",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/ayazemre/data-trails-ts"
