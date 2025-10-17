@@ -4,14 +4,18 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
-          node-version: "24"
-      - name: "Run Tests"
+          node-version: "24.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: "Publish to NPM"
         run: |
-          cd edium-core-library
-          npm install
-          npm run test
           npm run build
+          npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.DATA_TRAILS_NPM_TOKEN }}
