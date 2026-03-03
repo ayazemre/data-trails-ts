@@ -1,6 +1,6 @@
 {
 	"name": "data-trails",
-	"version": "0.3.21",
+	"version": "0.4.0",
 	"description": "Railway oriented programming building blocks.",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -37,7 +37,7 @@
 		"build": "tsc"
 	},
 	"devDependencies": {
-		"@types/node": "^24.5.2",
-		"typescript": "^5.9.2"
+		"@types/node": "^24.11.0",
+		"typescript": "^5.9.3"
 	}
 }

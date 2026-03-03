@@ -15,6 +15,22 @@ describe("Result", () => {
 		return null;
 	};
 
+	test("Wrap Success", async () => {
+		const wrapped = Result.wrap(testFunctionSync({ returns: "Data" }));
+
+		equal(wrapped.unwrap(), "Data");
+		throws(() => wrapped.unwrapError());
+		equal(wrapped.isError(), false);
+	});
+
+	test("Wrap Error", async () => {
+		const wrapped = Result.wrap(new Error("Test Error"));
+
+		equal(wrapped.unwrapError().message, "Test Error");
+		throws(() => wrapped.unwrap());
+		equal(wrapped.isError(), true);
+	});
+
 	test("Sync Success", async () => {
 		const result = Result.sync(() => testFunctionSync({ returns: "Data" }));
 
@@ -48,16 +64,16 @@ describe("Result", () => {
 
 		const mappedResult = result.mapError((error) => {
 			error.message = "Transformed Error";
+			return error;
 		});
 
 		equal(mappedResult.unwrapError().message, "Transformed Error");
 	});
 
-
 	// Async Test
 
 	test("Async Success", async () => {
-		const result = await Result.async(testFunctionAsync({ returns: "Data" }));
+		const result = await Result.async(() => testFunctionAsync({ returns: "Data" }));
 
 		equal(result.unwrap(), "Data");
 		throws(() => result.unwrapError());
@@ -65,7 +81,7 @@ describe("Result", () => {
 	});
 
 	test("Async Throw Capture", async () => {
-		const result = await Result.async(testFunctionAsync({ throws: true }));
+		const result = await Result.async(() => testFunctionAsync({ throws: true }));
 
 		throws(() => result.unwrap());
 		equal(result.unwrapError().message, "Test Error");
@@ -73,12 +89,33 @@ describe("Result", () => {
 	});
 
 	test("Async Map Error", async () => {
-		const result = await Result.async(testFunctionAsync({ throws: true }));
+		const result = await Result.async(() => testFunctionAsync({ throws: true }));
 
 		throws(() => result.unwrap());
 		equal(result.unwrapError().message, "Test Error");
 		equal(result.isError(), true);
-		const mappedError = result.mapError((error) => (error.message = "Transformed Error"));
+		const mappedError = result.mapError((error) => {
+			error.message = "Transformed Error";
+			return error;
+		});
 		equal(mappedError.unwrapError().message, "Transformed Error");
+	});
+
+	test("Sync Map Error on Success", async () => {
+		const result = Result.sync(() => "Success");
+		throws(() => result.mapError((e) => e), {
+			message: "Wrapped result is not an error. Use isError helper.",
+		});
+	});
+
+	test("Custom Error Subclass Preservation", async () => {
+		class CustomError extends Error {
+			code = 404;
+		}
+		const result = Result.wrap(new CustomError("Not Found"));
+
+		equal(result.isError(), true);
+		equal(result.unwrapError() instanceof CustomError, true);
+		equal(result.unwrapError().code, 404);
 	});
 });

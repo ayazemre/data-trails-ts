@@ -1,12 +1,11 @@
 import { Result } from "./result.ts";
 
-export function createSyncTrail<T extends SyncFunction>(entryPoint: T): SyncDataTrail<T> {
+export function createSyncTrail<T>(entryPoint: () => T): SyncDataTrail<T> {
 	return {
 		trail: [entryPoint],
-		// @ts-ignore TODO: Fix type error
 		chain(fn) {
 			this.trail.push(fn);
-			return this;
+			return this as any;
 		},
 		run() {
 			let result = Result.sync(() => this.trail[0]());
@@ -23,48 +22,38 @@ export function createSyncTrail<T extends SyncFunction>(entryPoint: T): SyncData
 	};
 }
 
-export function createAsyncTrail<T extends AsyncFunction>(entryPoint: T): AsyncDataTrail<T> {
+export function createAsyncTrail<T>(entryPoint: () => Promise<T>): AsyncDataTrail<T> {
 	return {
 		trail: [entryPoint],
-		// @ts-ignore TODO: Fix type error
 		chain(fn) {
 			this.trail.push(fn);
-			return this;
+			return this as any;
 		},
 		async run() {
-			let result = await Result.async(this.trail[0]());
+			let result = await Result.async(() => this.trail[0]());
 
 			for (let index = 1; index < this.trail.length; index++) {
 				if (result.isError()) {
 					break;
 				}
-				result = await Result.async(this.trail[index](result.unwrap()));
+				result = await Result.async(() => this.trail[index](result.unwrap()));
 			}
 
-			return result;
+			return result as any;
 		},
 	};
 }
 
 export const DataTrail = { createAsyncTrail, createSyncTrail };
 
-//TODO: Prevent sync trail to get async input
-// export type NotAPromise<T> = T extends Promise<any> ? never : T;
-
-export type AsyncFunction = (...args: any[]) => Promise<unknown>;
-export type SyncFunction = (...args: any[]) => unknown;
-
-export type ChainAsyncFunction<T extends AsyncFunction> = (previousValue: Awaited<ReturnType<T>>) => Promise<any>;
-export type ChainSyncFunction<T extends SyncFunction> = (previousValue: ReturnType<T>) => any;
-
-export type AsyncDataTrail<T extends AsyncFunction> = {
+export type AsyncDataTrail<T> = {
 	trail: Array<Function>;
-	chain<U extends ChainAsyncFunction<T>>(fn: U): AsyncDataTrail<U>;
-	run(): Promise<Result<Awaited<ReturnType<T>>, Error>>;
+	chain<U>(fn: (previousValue: T) => Promise<U>): AsyncDataTrail<U>;
+	run(): Promise<Result<T, Error>>;
 };
 
-export type SyncDataTrail<T extends SyncFunction> = {
+export type SyncDataTrail<T> = {
 	trail: Array<Function>;
-	chain<U extends ChainSyncFunction<T>>(fn: U): SyncDataTrail<U>;
-	run(): Result<ReturnType<T>, Error>;
+	chain<U>(fn: (previousValue: T) => U): SyncDataTrail<U>;
+	run(): Result<T, Error>;
 };

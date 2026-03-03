@@ -1,88 +1,59 @@
-export function sync<T extends (...args: any[]) => any>(fn: T): Result<ReturnType<T>, Error> {
-	let returnValue;
-
-	try {
-		returnValue = fn();
-	} catch (error) {
-		Error.isError(error) ? (returnValue = error) : (returnValue = new Error("", { cause: error }));
-	}
-
+export function wrap<T>(value: T): T extends Error ? Result<never, T> : Result<T, Error> {
 	return {
 		isError() {
-			return Error.isError(returnValue);
+			return Error.isError(value);
 		},
 
 		unwrapError() {
-			if (Error.isError(returnValue)) {
-				returnValue.name = "ResultError";
-				return returnValue;
+			if (Error.isError(value)) {
+				return value as any;
 			}
 			throw new Error("Wrapped result is not an error. Use isError helper.");
 		},
 
-		mapError(fn: (error: Error) => any) {
-			if (Error.isError(returnValue)) {
-				fn(returnValue);
-				return this;
+		mapError(fn: (error: Error) => Error) {
+			if (Error.isError(value)) {
+				return wrap(fn(value));
 			} else {
 				throw new Error("Wrapped result is not an error. Use isError helper.");
 			}
 		},
 
 		unwrap() {
-			if (Error.isError(returnValue)) {
+			if (Error.isError(value)) {
 				throw new Error("Wrapped result is an error. Use isError helper.");
 			}
-			return returnValue;
+			return value as any;
 		},
-	};
+	} as T extends Error ? Result<never, T> : Result<T, Error>;
 }
 
-export async function async<T extends Promise<any>>(fn: T): Promise<Result<Awaited<T>, Error>> {
-	let returnValue;
-
+export function sync<T>(fn: () => T): Result<T, Error> {
 	try {
-		returnValue = await fn;
+		return wrap(fn());
 	} catch (error) {
-		Error.isError(error) ? (returnValue = error) : (returnValue = new Error("", { cause: error }));
+		return normalizeError(error);
 	}
-
-	return {
-		isError() {
-			return Error.isError(returnValue);
-		},
-
-		unwrapError() {
-			if (Error.isError(returnValue)) {
-				returnValue.name = "ResultError";
-				return returnValue;
-			}
-			throw Error("Tried to unwrap a value as error. Use isError helper.");
-		},
-
-		mapError(fn: (error: Error) => any) {
-			if (Error.isError(returnValue)) {
-				fn(returnValue);
-				return this as Result<Awaited<T>, Error>;
-			} else {
-				throw new Error("Wrapped result is not an error. Use isError helper.");
-			}
-		},
-
-		unwrap() {
-			if (Error.isError(returnValue)) {
-				throw Error("Tried to unwrap an error as value. Use isError helper.");
-			}
-			return returnValue;
-		},
-	};
 }
 
-export const Result = { async, sync };
+export async function async<T>(fn: () => Promise<T>): Promise<Result<T, Error>> {
+	try {
+		return wrap(await fn());
+	} catch (error) {
+		return normalizeError(error);
+	}
+}
 
-export type Result<T, Error> = {
+export const Result = { async, sync, wrap };
+
+export type Result<T, E = Error> = {
 	unwrap(): T;
-	unwrapError(): Error;
-	mapError(fn: (error: Error) => unknown): Result<T, Error>;
+	unwrapError(): E;
+	mapError(fn: (error: E) => E): Result<T, E>;
 	isError(): boolean;
 };
+
+// Helpers
+function normalizeError(error: unknown) {
+	return Error.isError(error) ? wrap(error) : wrap(new Error("", { cause: error }));
+}
