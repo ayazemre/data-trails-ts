@@ -29,8 +29,7 @@
 		"#src/*": "./src/*"
 	},
 	"exports": {
-		".": "./dist/index.js",
-		"./result": "./dist/lib/result.js"
+		".": "./dist/index.js"
 	},
 	"scripts": {
 		"test": "node --test",
