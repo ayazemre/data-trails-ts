@@ -1,7 +1,6 @@
 # Data Trails
 
 [![npm version](https://badge.fury.io/js/data-trails.svg)](https://badge.fury.io/js/data-trails)
-[![Build Status](https://travis-ci.org/ayazemre/data-trails-ts.svg?branch=dev)](https://travis-ci.org/ayazemre/data-trails-ts)
 
 Data Trails is a lightweight TypeScript library that provides a robust and elegant way to handle operations that might fail, such as network requests, file system operations, or any function that can throw an error. It's built around two core concepts: `Result` and `DataTrail`.
 
@@ -26,6 +25,17 @@ The `Result<T, Error>` type is a wrapper that represents one of two outcomes:
 - `Error`: The operation failed, containing an error.
 
 This pattern prevents your application from crashing due to unhandled exceptions and makes error flow explicit.
+
+### `Result.wrap`
+
+Automatically wraps any value into a `Result`. If the value is an `Error` instance, it creates an error result. Otherwise, it creates a success result. This is useful for wrapping existing variables or return values.
+
+```typescript
+import { Result } from "data-trails";
+
+const success = Result.wrap("Hello"); // Result<string, Error>
+const failure = Result.wrap(new Error("Fail")); // Result<never, Error>
+```
 
 ### `Result.sync`
 
@@ -68,7 +78,7 @@ The `Result` object exposes `isError()`, `unwrap()` and `unwrapError()` rather t
 
 ### `Result.async`
 
-Use `Result.async` to wrap asynchronous functions or `Promise`s. It works similarly but returns a `Promise<Result<T, E>>`.
+Use `Result.async` to wrap asynchronous functions. It takes a factory function that returns a `Promise` and returns a `Promise<Result<T, Error>>`.
 
 Consider a function that fetches data from an API:
 
@@ -88,7 +98,8 @@ Wrapping it with `Result.async`:
 import { Result } from "data-trails";
 
 async function getUser(id: string) {
-	const userResult = await Result.async(fetchUserData(id));
+	// Note: We pass a factory function () => fetchUserData(id)
+	const userResult = await Result.async(() => fetchUserData(id));
 
 	if (!userResult.isError()) {
 		console.log(`Welcome, ${userResult.unwrap().name}!`);
@@ -100,75 +111,65 @@ async function getUser(id: string) {
 
 ## Core Concept: `DataTrail`
 
-The `DataTrail` utility allows you to chain multiple operations. If any step fails, the trail short-circuits and returns the first error; subsequent steps are not executed.
-
-Important: the actual API uses factory functions to create trails and method names differ from some drafts. Use `DataTrail.createSyncTrail(...)` or `DataTrail.createAsyncTrail(...)`, then chain with `.chain(...)` and execute with `.run()`.
+The `DataTrail` utility allows you to chain multiple operations. If any step fails (either by returning an error Result or throwing an exception), the trail short-circuits and returns the first error; subsequent steps are not executed.
 
 ### `DataTrail` Usage
 
 Imagine a workflow where you need to:
 
 1.  Fetch a user from an API.
-2.  Validate the user's email address.
-3.  Send a welcome email.
+2.  Validate the user's data.
+3.  Save the user to a database.
 
-Each of these steps can fail. Using `DataTrail`, you can write this cleanly:
+Using `DataTrail`, you can write this as a clean "Happy Path" chain:
 
 ```typescript
 import { Result, DataTrail } from "data-trails";
 
-// Assume these functions are defined elsewhere and return Result or Promise<Result>
-declare function fetchUser(userId: string): Promise<Result<{ email: string }, Error>>;
-declare function validateEmail(user: { email: string }): Result<{ email: string }, Error>;
-declare function sendWelcomeEmail(user: { email: string }): Promise<Result<boolean, Error>>;
+// Assume these functions can throw or return raw values
+declare function fetchUser(userId: string): Promise<{ email: string }>;
+declare function validateUser(user: { email: string }): { email: string; valid: boolean };
+declare function saveUser(user: { email: string }): Promise<boolean>;
 
 async function onboardUser(userId: string) {
-	// create an async trail that starts from the userId
-	const trail = DataTrail.createAsyncTrail(async () => userId);
-
-	// chain steps; each step can return Result or Promise<Result>
-	const finalResult = await trail
-		.chain(async (id) => fetchUser(id)) // returns Promise<Result<..., Error>>
-		.chain((res) => {
-			// if the previous step produced an error Result, short-circuit behavior is handled by the trail
-			return validateEmail(res.unwrap());
-		})
-		.chain((validated) => sendWelcomeEmail(validated))
+	const finalResult = await DataTrail.createAsyncTrail(() => fetchUser(userId))
+		.chain(async (user) => validateUser(user))
+		.chain(async (validated) => saveUser(validated))
 		.run();
 
 	if (!finalResult.isError()) {
 		console.log("User onboarding successful!");
 	} else {
+		// If any step failed, the error is captured here
 		console.error("Onboarding failed:", finalResult.unwrapError().message);
 	}
 }
 ```
 
-In the example above, if `fetchUser` or `validateEmail` fails, `sendWelcomeEmail` will not be called. The `DataTrail` short-circuits and `finalResult` will contain the error from the first failed step.
-
 ## API
 
-### `Result<T, E>`
+### `Result<T, E = Error>`
 
-- `Result.sync(fn: () => T): Result<T, Error>` — wrap a sync function that may throw.
-- `Result.async(p: Promise<T> | (() => Promise<T>)): Promise<Result<T, Error>>` — wrap an async value.
+- `Result.wrap(value: T): Result` — automatically detect state based on value type.
+- `Result.sync(fn: () => T): Result<T, Error>` — wrap a sync function.
+- `Result.async(fn: () => Promise<T>): Promise<Result<T, Error>>` — wrap an async function.
 - Result instance methods:
   - `isError(): boolean`
-  - `unwrap(): T` — returns value or throws if error
-  - `unwrapError(): Error` — returns error or throws if success
-  - `mapError(fn: (e: Error) => Error): Result<T, Error>`
+  - `unwrap(): T` — returns value or throws if error.
+  - `unwrapError(): E` — returns error or throws if success.
+  - `mapError(fn: (e: Error) => Error): Result<T, Error>` — transforms the error. Throws if called on a success.
 
 ### `DataTrail`
 
 - `DataTrail.createSyncTrail(entryPoint: () => T)` — create a synchronous trail.
-- `DataTrail.createAsyncTrail(entryPoint: () => Promise<T> | PromiseLike<T>)` — create an asynchronous trail.
+- `DataTrail.createAsyncTrail(entryPoint: () => Promise<T>)` — create an asynchronous trail.
 - Trail instance methods:
-  - `.chain(fn)` — append a step; receives previous step's value. Sync trails expect sync functions; async trails accept async functions.
-  - `.run()` — execute the trail. Sync trails return a `Result`; async trails return `Promise<Result<...>>`.
+  - `.chain(fn)` — append a step; receives previous step's unwrapped value.
+  - `.run()` — execute the trail. Returns a `Result` or `Promise<Result>`.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue. Tests in `test/` show expected behavior.
+Contributions are welcome! Please feel free to submit a pull request or open an issue.
 
 ## License
 
