@@ -9,7 +9,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/ayazemre/data-trails-ts"
+		"url": "git+https://github.com/ayazemre/data-trails"
 	},
 	"keywords": [
 		"railway",
@@ -19,9 +19,9 @@
 		"data trail"
 	],
 	"bugs": {
-		"url": "https://github.com/frostium-dev/data-trails/issues"
+		"url": "https://github.com/ayazemre/data-trails/issues"
 	},
-	"homepage": "https://github.com/frostium-dev/data-trails#readme",
+	"homepage": "https://github.com/ayazemre/data-trails#readme",
 	"files": [
 		"dist"
 	],
