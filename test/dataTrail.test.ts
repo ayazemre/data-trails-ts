@@ -94,7 +94,6 @@ async function testAsyncObject<T extends object>(object: T) {
 async function testAsyncThrows(message: string) {
   await new Promise((resolve) => setTimeout(resolve, 100));
   throw new Error(message);
-  return 1234;
 }
 
 function testSyncString(text: string) {
@@ -107,5 +106,4 @@ function testSyncObject<T extends object>(object: T) {
 
 function testSyncThrows(message: string) {
   throw new Error(message);
-  return 1234;
 }
