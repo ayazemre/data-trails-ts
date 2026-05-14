@@ -1,59 +1,59 @@
 import { Result } from "./result.ts";
 
 export function createSyncTrail<T>(entryPoint: () => T): SyncDataTrail<T> {
-	return {
-		trail: [entryPoint],
-		chain(fn) {
-			this.trail.push(fn);
-			return this as any;
-		},
-		run() {
-			let result = Result.sync(() => this.trail[0]());
+  return {
+    chain(fn) {
+      this.trail.push(fn);
+      return this as any;
+    },
+    run() {
+      let result = Result.sync(() => this.trail[0]());
 
-			for (let index = 1; index < this.trail.length; index++) {
-				if (result.isError()) {
-					break;
-				}
-				result = Result.sync(() => this.trail[index](result.unwrap()));
-			}
+      for (let index = 1; index < this.trail.length; index++) {
+        if (result.isError()) {
+          break;
+        }
+        result = Result.sync(() => this.trail[index](result.unwrap()));
+      }
 
-			return result;
-		},
-	};
+      return result;
+    },
+    trail: [entryPoint],
+  };
 }
 
 export function createAsyncTrail<T>(entryPoint: () => Promise<T>): AsyncDataTrail<T> {
-	return {
-		trail: [entryPoint],
-		chain(fn) {
-			this.trail.push(fn);
-			return this as any;
-		},
-		async run() {
-			let result = await Result.async(() => this.trail[0]());
+  return {
+    chain(fn) {
+      this.trail.push(fn);
+      return this as any;
+    },
+    async run() {
+      let result = await Result.async(() => this.trail[0]());
 
-			for (let index = 1; index < this.trail.length; index++) {
-				if (result.isError()) {
-					break;
-				}
-				result = await Result.async(() => this.trail[index](result.unwrap()));
-			}
+      for (let index = 1; index < this.trail.length; index++) {
+        if (result.isError()) {
+          break;
+        }
+        result = await Result.async(() => this.trail[index](result.unwrap()));
+      }
 
-			return result as any;
-		},
-	};
+      return result as any;
+    },
+    trail: [entryPoint],
+  };
 }
 
 export const DataTrail = { createAsyncTrail, createSyncTrail };
 
 export type AsyncDataTrail<T> = {
-	trail: Array<Function>;
-	chain<U>(fn: (previousValue: T) => Promise<U>): AsyncDataTrail<U>;
-	run(): Promise<Result<T, Error>>;
+  trail: Array<Function>;
+  chain<U>(fn: (previousValue: T) => Promise<U>): AsyncDataTrail<U>;
+  run(): Promise<Result<T, Error>>;
 };
 
 export type SyncDataTrail<T> = {
-	trail: Array<Function>;
-	chain<U>(fn: (previousValue: T) => U): SyncDataTrail<U>;
-	run(): Result<T, Error>;
+  trail: Array<Function>;
+  chain<U>(fn: (previousValue: T) => U): SyncDataTrail<U>;
+  run(): Result<T, Error>;
 };

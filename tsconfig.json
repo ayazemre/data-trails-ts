@@ -1,28 +1,17 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "module": "nodenext",
-        "outDir": "./dist",
-        "strict": true,
-        "erasableSyntaxOnly": true,
-        "allowJs": false,
-        "allowArbitraryExtensions": true,
-        "verbatimModuleSyntax": true,
-        "declaration": true,
-        "declarationMap": true,
-        "rewriteRelativeImportExtensions": true,
-        // Linty rules
-        "forceConsistentCasingInFileNames": true,
-        "strictNullChecks": true,
-        "strictFunctionTypes": true,
-        "noUnusedParameters": true,
-        "noUnusedLocals": true,
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "allowUnreachableCode": false
-    },
-    "include": [
-        "./src/index.ts",
-    ],
+  "compilerOptions": {
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "emitDeclarationOnly": true,
+    "erasableSyntaxOnly": true,
+    "allowJs": false,
+    "declaration": true,
+    "declarationMap": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "types": ["node"]
+  },
+  "include": ["./src/**/*"]
 }
