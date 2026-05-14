@@ -1,6 +1,6 @@
 {
   "name": "data-trails",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Railway oriented programming building blocks.",
   "keywords": [
     "data trail",
@@ -26,7 +26,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "imports": {
-    "#src/*": "./src/*"
+    "#lib/*": "./src/lib/*"
   },
   "exports": {
     ".": "./dist/index.js"

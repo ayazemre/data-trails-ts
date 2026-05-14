@@ -1,4 +1,4 @@
-import { DataTrail } from "#src/lib/dataTrail.ts";
+import { DataTrail } from "#lib/dataTrail.ts";
 
 import { equal } from "assert";
 import { describe, test } from "node:test";

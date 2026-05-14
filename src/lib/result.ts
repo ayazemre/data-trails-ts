@@ -44,7 +44,7 @@ export async function async<T>(fn: () => Promise<T>): Promise<Result<T, Error>> 
   }
 }
 
-export const Result = { async, sync, wrap };
+export const Result = { async, sync, void: (): Result<void, Error> => wrap(undefined as any), wrap };
 
 export type Result<T, E = Error> = {
   unwrap(): T;

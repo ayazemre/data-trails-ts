@@ -1,18 +1,27 @@
 # Changelog
 
+## [0.6.0] - 2026-05-15
+
+- Added `Result.void` helper for successful operations without return values.
+
+## [0.5.0] - 2026-05-15
+
+- Integrated Oxc linting and formatting tooling.
+- Updated project dependencies.
+
 ## [0.4.0] - 2026-03-04
 
-- Update project configuration and package details.
+- Update project configuration and metadata.
+- Refactor type system and finalize `Result` implementation.
 
 ## [0.3.0] - 2025-10-18
 
-- Refactor type system and fix Result implementation.
-- Update project metadata and license files.
+- Update project metadata, license, and package configuration.
 
 ## [0.2.0] - 2025-10-17
 
-- Enhance `Result` type with `mapError` support.
-- Refactor package structure and CI/CD workflows.
+- Add `mapError` support to `Result` type.
+- Refactor package structure and CI/CD workflows (GitHub Actions).
 
 ## [0.1.0] - 2025-09-20
 
