@@ -1,6 +1,6 @@
 import { Result } from "./result.ts";
 
-export function createSyncTrail<T>(entryPoint: () => T): SyncDataTrail<T> {
+function createSyncTrail<T>(entryPoint: () => T): SyncDataTrail<T> {
   return {
     chain(fn) {
       this.trail.push(fn);
@@ -22,7 +22,7 @@ export function createSyncTrail<T>(entryPoint: () => T): SyncDataTrail<T> {
   };
 }
 
-export function createAsyncTrail<T>(entryPoint: () => Promise<T>): AsyncDataTrail<T> {
+function createAsyncTrail<T>(entryPoint: () => Promise<T>): AsyncDataTrail<T> {
   return {
     chain(fn) {
       this.trail.push(fn);

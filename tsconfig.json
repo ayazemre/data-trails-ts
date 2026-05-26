@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "moduleResolution": "bundler",
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
     "emitDeclarationOnly": true,
     "erasableSyntaxOnly": true,
@@ -13,5 +13,5 @@
     "allowImportingTsExtensions": true,
     "types": ["node"]
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*.ts", "./test/**/*.ts"]
 }

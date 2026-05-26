@@ -1,4 +1,4 @@
-export function wrap<T>(value: T): T extends Error ? Result<never, T> : Result<T, Error> {
+function wrap<T>(value: T): T extends Error ? Result<never, T> : Result<T, Error> {
   return {
     isError() {
       return Error.isError(value);
@@ -28,7 +28,7 @@ export function wrap<T>(value: T): T extends Error ? Result<never, T> : Result<T
   } as T extends Error ? Result<never, T> : Result<T, Error>;
 }
 
-export function sync<T>(fn: () => T): Result<T, Error> {
+function sync<T>(fn: () => T): Result<T, Error> {
   try {
     return wrap(fn());
   } catch (error) {
@@ -36,7 +36,7 @@ export function sync<T>(fn: () => T): Result<T, Error> {
   }
 }
 
-export async function async<T>(fn: () => Promise<T>): Promise<Result<T, Error>> {
+async function async<T>(fn: () => Promise<T>): Promise<Result<T, Error>> {
   try {
     return wrap(await fn());
   } catch (error) {

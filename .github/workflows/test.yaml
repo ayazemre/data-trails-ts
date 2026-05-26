@@ -1,7 +1,6 @@
-name: Run Tests On Push
+name: Run Tests
 on:
-  push:
-  workflow_dispatch:
+  workflow_call:
 jobs:
   run-tests:
     runs-on: ubuntu-latest

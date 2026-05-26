@@ -1,8 +1,9 @@
 import { defineConfig } from "rolldown";
+import { dts } from "rolldown-plugin-dts";
 import { glob } from "tinyglobby";
 
 export default defineConfig({
-  external: [/node_modules/],
+  external: [/^(?!(?:#src|@\/))[^./](?!:[/\\])/],
   input: await glob("src/**/*.ts"),
   output: {
     cleanDir: true,
@@ -11,6 +12,7 @@ export default defineConfig({
     sourcemap: true,
   },
   platform: "node",
+  plugins: [dts()],
   resolve: {
     extensions: [".ts"],
   },

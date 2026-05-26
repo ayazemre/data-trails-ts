@@ -1,4 +1,4 @@
-import { Result } from "#lib/result.ts";
+import { Result } from "#src/result.ts";
 
 import { equal, throws } from "assert";
 import { describe, test } from "node:test";

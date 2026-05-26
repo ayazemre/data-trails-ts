@@ -1,2 +1,2 @@
-export * from "./lib/result.ts";
-export * from "./lib/dataTrail.ts";
+export * from "./result.ts";
+export * from "./dataTrail.ts";
