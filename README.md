@@ -13,8 +13,6 @@ This approach helps you write more predictable and maintainable code by making e
 
 ```bash
 npm install data-trails
-# or
-yarn add data-trails
 ```
 
 ## Core Concept: `Result`
@@ -44,12 +42,12 @@ Use `Result.sync` to wrap synchronous functions that might throw an error.
 Let's say you have a function that parses JSON and can throw an error:
 
 ```typescript
-const parseJSON = (jsonString: string): { message: string } => {
+function parseJSON(jsonString: string): { message: string } {
   if (!jsonString) {
     throw new Error("Input string cannot be empty!");
   }
   return JSON.parse(jsonString);
-};
+}
 ```
 
 Instead of a `try...catch` block, you can wrap it with `Result.sync`:
@@ -83,13 +81,13 @@ Use `Result.async` to wrap asynchronous functions. It takes a factory function t
 Consider a function that fetches data from an API:
 
 ```typescript
-const fetchUserData = async (userId: string): Promise<{ id: string; name: string }> => {
+async function fetchUserData(userId: string): Promise<{ id: string; name: string }> {
   const response = await fetch(`https://api.example.com/users/${userId}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch user: ${response.statusText}`);
   }
   return response.json();
-};
+}
 ```
 
 Wrapping it with `Result.async`:
@@ -150,14 +148,15 @@ async function onboardUser(userId: string) {
 
 ### `Result<T, E = Error>`
 
-- `Result.wrap(value: T): Result` — automatically detect state based on value type.
+- `Result.wrap(value: T): Result` — Wraps the given value with a result. If the given value is an instance of `Error`, it returns an error result (`Result<never, Error>`). Otherwise, it returns a success result (`Result<T, never>`).
 - `Result.sync(fn: () => T): Result<T, Error>` — wrap a sync function.
 - `Result.async(fn: () => Promise<T>): Promise<Result<T, Error>>` — wrap an async function.
+- `Result.void(): Result<void, Error>` — create a successful result with no value.
 - Result instance methods:
-  - `isError(): boolean`
+  - `isError(): this is Result<never, E>` — returns true if the result is an error. Acts as a type guard.
   - `unwrap(): T` — returns value or throws if error.
   - `unwrapError(): E` — returns error or throws if success.
-  - `mapError(fn: (e: Error) => Error): Result<T, Error>` — transforms the error. Throws if called on a success.
+  - `mapError(fn: (e: E) => E): Result<T, E>` — transforms the error. Throws if called on a success result.
 
 ### `DataTrail`
 

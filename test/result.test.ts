@@ -4,20 +4,20 @@ import { equal, throws } from "assert";
 import { describe, test } from "node:test";
 
 describe("Result", () => {
-  const testFunctionSync = (params: { throws?: boolean; returns?: string | null | undefined }) => {
+  function testFunctionSync(params: { throws?: boolean; returns?: string | null | undefined }) {
     if (params.throws) throw new Error("Test Error");
     if (params.returns) return params.returns;
     return null;
-  };
+  }
 
-  const testFunctionAsync = async (params: { throws?: boolean; returns?: string | null | undefined }) => {
+  async function testFunctionAsync(params: { throws?: boolean; returns?: string | null | undefined }) {
     if (params.throws) throw new Error("Test Error");
     if (params.returns) return params.returns;
     return null;
-  };
+  }
 
   test("Wrap Success", async () => {
-    const wrapped = Result.wrap(testFunctionSync({ returns: "Data" }));
+    const wrapped = Result.wrap("Data");
 
     equal(wrapped.unwrap(), "Data");
     throws(() => wrapped.unwrapError());
@@ -42,6 +42,14 @@ describe("Result", () => {
 
   test("Sync Void Success", async () => {
     const result = Result.sync(() => {});
+
+    equal(result.unwrap(), null);
+    throws(() => result.unwrapError());
+    equal(result.isError(), false);
+  });
+
+  test("Void Result", async () => {
+    const result = Result.void();
 
     equal(result.unwrap(), null);
     throws(() => result.unwrapError());
@@ -120,12 +128,25 @@ describe("Result", () => {
     equal(result.unwrapError().code, 404);
   });
 
+  test("Non-Error Capture", async () => {
+    const result = Result.sync(() => {
+      throw "Non-Error Value";
+    });
+
+    equal(result.isError(), true);
+    equal(result.unwrapError().cause, "Non-Error Value");
+  });
+
   test("Type Guard", async () => {
     function typeGuardTest(): Result<number, Error> {
-      const result = Result.sync(() => testFunctionSync({ throws: true }));
+      const result = Result.sync((): string => {
+        throw new Error("Test Error");
+      });
+
       if (result.isError()) {
         return result;
       }
+
       const wrappedResult = Result.wrap(1);
       return wrappedResult;
     }

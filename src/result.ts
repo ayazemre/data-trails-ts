@@ -1,4 +1,4 @@
-function wrap<T>(value: T): T extends Error ? Result<never, T> : Result<T, Error> {
+function wrap<T>(value: T): T extends Error ? Result<never, T> : Result<T, never> {
   return {
     isError() {
       return Error.isError(value);
@@ -25,7 +25,7 @@ function wrap<T>(value: T): T extends Error ? Result<never, T> : Result<T, Error
       }
       throw new Error("Wrapped result is not an error. Use isError helper.");
     },
-  } as T extends Error ? Result<never, T> : Result<T, Error>;
+  } as any;
 }
 
 function sync<T>(fn: () => T): Result<T, Error> {
@@ -44,7 +44,7 @@ async function async<T>(fn: () => Promise<T>): Promise<Result<T, Error>> {
   }
 }
 
-export const Result = { async, sync, void: (): Result<void, Error> => wrap(undefined as any), wrap };
+export const Result = { async, sync, void: (): Result<void, Error> => wrap(null as any), wrap };
 
 export type Result<T, E = Error> = {
   unwrap(): T;
