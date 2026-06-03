@@ -50,7 +50,7 @@ export type Result<T, E = Error> = {
   unwrap(): T;
   unwrapError(): E;
   mapError(fn: (error: E) => E): Result<T, E>;
-  isError(): boolean;
+  isError(): this is Result<never, E>;
 };
 
 // Helpers

@@ -119,4 +119,18 @@ describe("Result", () => {
     equal(result.unwrapError() instanceof CustomError, true);
     equal(result.unwrapError().code, 404);
   });
+
+  test("Type Guard", async () => {
+    function typeGuardTest(): Result<number, Error> {
+      const result = Result.sync(() => testFunctionSync({ throws: true }));
+      if (result.isError()) {
+        return result;
+      }
+      const wrappedResult = Result.wrap(1);
+      return wrappedResult;
+    }
+
+    const result = typeGuardTest();
+    equal(result.isError(), true);
+  });
 });

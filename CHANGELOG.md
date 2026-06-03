@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.7.0] - 2026-06-03
+
+- Added type guard to `Result.isError()` to improve type narrowing and cross-type compatibility.
+
 ## [0.6.0] - 2026-05-15
 
 - Added `Result.void` helper for successful operations without return values.
