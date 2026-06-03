@@ -8,3 +8,4 @@ migrations
 temporary
 temp
 .DS_Store
+.npmrc

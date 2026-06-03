@@ -8,11 +8,19 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
-          node-version: "25"
-      - name: "Run Tests"
-        run: |
-          npm install
-          npm run lint
-          npm run format
-          npm run test
-          npm run build
+          node-version: "latest"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format
+        run: npm run format -- --check
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
