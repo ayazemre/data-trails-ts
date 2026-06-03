@@ -45,10 +45,10 @@ Let's say you have a function that parses JSON and can throw an error:
 
 ```typescript
 const parseJSON = (jsonString: string): { message: string } => {
-	if (!jsonString) {
-		throw new Error("Input string cannot be empty!");
-	}
-	return JSON.parse(jsonString);
+  if (!jsonString) {
+    throw new Error("Input string cannot be empty!");
+  }
+  return JSON.parse(jsonString);
 };
 ```
 
@@ -61,16 +61,16 @@ import { Result } from "data-trails";
 const successResult = Result.sync(() => parseJSON('{ "message": "Hello World" }'));
 
 if (!successResult.isError()) {
-	// Safely access the value
-	console.log(successResult.unwrap().message); // "Hello World"
+  // Safely access the value
+  console.log(successResult.unwrap().message); // "Hello World"
 }
 
 // --- Failure Case ---
 const errorResult = Result.sync(() => parseJSON("invalid-json"));
 
 if (errorResult.isError()) {
-	// Handle the error explicitly
-	console.error(errorResult.unwrapError().message); // "Unexpected token i in JSON at position 0"
+  // Handle the error explicitly
+  console.error(errorResult.unwrapError().message); // "Unexpected token i in JSON at position 0"
 }
 ```
 
@@ -84,11 +84,11 @@ Consider a function that fetches data from an API:
 
 ```typescript
 const fetchUserData = async (userId: string): Promise<{ id: string; name: string }> => {
-	const response = await fetch(`https://api.example.com/users/${userId}`);
-	if (!response.ok) {
-		throw new Error(`Failed to fetch user: ${response.statusText}`);
-	}
-	return response.json();
+  const response = await fetch(`https://api.example.com/users/${userId}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user: ${response.statusText}`);
+  }
+  return response.json();
 };
 ```
 
@@ -98,14 +98,14 @@ Wrapping it with `Result.async`:
 import { Result } from "data-trails";
 
 async function getUser(id: string) {
-	// Note: We pass a factory function () => fetchUserData(id)
-	const userResult = await Result.async(() => fetchUserData(id));
+  // Note: We pass a factory function () => fetchUserData(id)
+  const userResult = await Result.async(() => fetchUserData(id));
 
-	if (!userResult.isError()) {
-		console.log(`Welcome, ${userResult.unwrap().name}!`);
-	} else {
-		console.error(`Error fetching user: ${userResult.unwrapError().message}`);
-	}
+  if (!userResult.isError()) {
+    console.log(`Welcome, ${userResult.unwrap().name}!`);
+  } else {
+    console.error(`Error fetching user: ${userResult.unwrapError().message}`);
+  }
 }
 ```
 
@@ -132,17 +132,17 @@ declare function validateUser(user: { email: string }): { email: string; valid: 
 declare function saveUser(user: { email: string }): Promise<boolean>;
 
 async function onboardUser(userId: string) {
-	const finalResult = await DataTrail.createAsyncTrail(() => fetchUser(userId))
-		.chain(async (user) => validateUser(user))
-		.chain(async (validated) => saveUser(validated))
-		.run();
+  const finalResult = await DataTrail.createAsyncTrail(() => fetchUser(userId))
+    .chain(async (user) => validateUser(user))
+    .chain(async (validated) => saveUser(validated))
+    .run();
 
-	if (!finalResult.isError()) {
-		console.log("User onboarding successful!");
-	} else {
-		// If any step failed, the error is captured here
-		console.error("Onboarding failed:", finalResult.unwrapError().message);
-	}
+  if (!finalResult.isError()) {
+    console.log("User onboarding successful!");
+  } else {
+    // If any step failed, the error is captured here
+    console.error("Onboarding failed:", finalResult.unwrapError().message);
+  }
 }
 ```
 
