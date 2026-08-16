@@ -25,15 +25,12 @@ function run() {
     process.exit(1);
   }
 
-  // Preprocess bare '--documentation' flags to '--documentation=' so parseArgs accepts an empty value
-  const formattedArgs = rawArgs.map((arg) => (arg === "--documentation" ? "--documentation=" : arg));
-
   const { values } = parseArgs({
     allowPositionals: false,
-    args: formattedArgs,
+    args: process.argv.slice(2),
     options: {
       documentation: {
-        type: "string",
+        type: "boolean",
       },
       help: {
         type: "boolean",
