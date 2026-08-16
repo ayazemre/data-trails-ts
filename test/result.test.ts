@@ -1,7 +1,7 @@
-import { Result } from "#src/result.ts";
-
 import { equal, throws } from "assert";
 import { describe, test } from "node:test";
+
+import { Result } from "#src/result.ts";
 
 describe("Result", () => {
   function testFunctionSync(params: { throws?: boolean; returns?: string | null | undefined }) {

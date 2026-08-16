@@ -1,7 +1,7 @@
-import { DataTrail } from "#src/dataTrail.ts";
-
 import { equal } from "assert";
 import { describe, test } from "node:test";
+
+import { DataTrail } from "#src/dataTrail.ts";
 
 describe("Data Trail", () => {
   test("Sync Success", async () => {

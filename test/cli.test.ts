@@ -1,5 +1,5 @@
-import { execFileSync } from "child_process";
 import { equal, match, throws } from "assert";
+import { execFileSync } from "child_process";
 import { describe, test } from "node:test";
 
 describe("CLI", () => {
