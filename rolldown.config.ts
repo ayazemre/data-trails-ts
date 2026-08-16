@@ -3,7 +3,7 @@ import { dts } from "rolldown-plugin-dts";
 import { glob } from "tinyglobby";
 
 export default defineConfig({
-  external: [/^(?!(?:#src|@\/))[^./](?!:[/\\])/],
+  external: [/^(?!#)[^./](?!:[/\\])/],
   input: await glob("src/**/*.ts"),
   output: {
     cleanDir: true,

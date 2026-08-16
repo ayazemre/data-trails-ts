@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.7.1] - 2026-08-18
+
+- Added documentation CLI tool with section filtering (--documentation).
+
 ## [0.7.0] - 2026-06-03
 
 - Added type guard to `Result.isError()` to improve type narrowing and cross-type compatibility.
