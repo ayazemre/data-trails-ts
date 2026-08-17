@@ -1,6 +1,6 @@
 {
   "name": "data-trails",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Railway oriented programming building blocks.",
   "keywords": [
     "data trail",
@@ -32,15 +32,13 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "test": "node --test",
+    "test": "node --test tests/**",
     "build": "rolldown -c",
     "lint": "oxlint",
     "format": "oxfmt"
   },
   "devDependencies": {
-    "@types/json2md": "^1.5.4",
     "@types/node": "^26.2.0",
-    "json2md": "^2.0.3",
     "oxfmt": "^0.63.0",
     "oxlint": "^1.78.0",
     "rolldown": "^1.2.4",

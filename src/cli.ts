@@ -1,22 +1,19 @@
 #!/usr/bin/env node
-import json2md from "json2md";
-
+import { readFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
-
-import { readmeJSON } from "./documentation.ts";
 
 function showHelp() {
   console.log(`Documentation CLI
 
 Usage:
-  $ node ./src/cli.ts --documentation
+  $ npx data-trails --documentation
 
 Options:
   --documentation  Render all sections, or a comma-separated list of sections
   --help           Show this help menu`);
 }
 
-function run() {
+async function run() {
   const rawArgs = process.argv.slice(2);
 
   if (rawArgs.length === 0) {
@@ -44,7 +41,8 @@ function run() {
   }
 
   if (values.documentation) {
-    console.log(json2md(readmeJSON as any));
+    const readme = await readFile(new URL("../README.md", import.meta.url), "utf-8");
+    console.log(readme);
   }
 
   if (!values.help && !values.documentation) {
