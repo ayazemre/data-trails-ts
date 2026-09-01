@@ -4,9 +4,16 @@ export default defineConfig({
   ignorePatterns: ["dist", "node_modules"],
   overrides: [
     {
-      files: ["*.config.ts"],
+      excludeFiles: ["*.config.ts", "*.config.js"],
+      files: ["*.ts"],
       rules: {
-        "import/no-default-export": "off",
+        "import/no-default-export": "error",
+      },
+    },
+    {
+      files: ["*.ts"],
+      rules: {
+        "unicorn/filename-case": ["error", { cases: { camelCase: true } }],
       },
     },
   ],
@@ -14,11 +21,9 @@ export default defineConfig({
   rules: {
     "@typescript-eslint/consistent-type-imports": ["error", { fixStyle: "separate-type-imports", prefer: "type-imports" }],
     "@typescript-eslint/no-import-type-side-effects": "error",
-    "import/no-default-export": "error",
     "import/no-named-as-default": "error",
     "max-statements": ["error", 50],
     "no-unused-vars": "error",
     "sort-keys": "error",
-    "unicorn/filename-case": ["error", { cases: { camelCase: true } }],
   },
 });
