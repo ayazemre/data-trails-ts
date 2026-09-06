@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.8.1] - 2026-09-07
+
+- Remove implementation details from `Trail` documentation and add workflow rail explanation for success and error encapsulation.
+
 ## [0.8.0] - 2026-09-07
 
 - Simplify `Trail` to async-only with `initialData` first: `Trail.from<T>(initialData: T)`, `chain<U>((value: T) => Promise<U>)`, `run(): Promise<Result<T, Error>>` and always-await `run` via `Result.from`.

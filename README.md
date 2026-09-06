@@ -116,12 +116,7 @@ export type Trail<T> = {
 };
 ```
 
-Implementation details:
-
-- `Trail.from<T>(initialData: T): Trail<T>` is `createTrail(initialData)` with `steps: []`. No factory `() => Promise<T>`, the value is stored as `initialData` closure.
-- `createTrail<T>(initialData: T, steps = [])` returns `{ steps, chain, run }`.
-- `chain<U>(fn)` returns `createTrail<U>(initialData as unknown as U, [...steps, fn as (value: unknown) => Promise<unknown>])`. The `initialData` is carried as `unknown` for the next `Trail<U>`.
-- `run()` is always `async` and always `await`s: `let current: unknown = initialData; let lastResult = Result.wrap(current as T); for (const step of steps) { lastResult = await Result.from(() => step(current)); if (lastResult.isError()) return lastResult; current = lastResult.unwrap(); } return lastResult;`. Empty `steps` returns `Result.wrap(initialData)`. Batching 4 sync steps in async flow works via `Promise.resolve` wrappers, but `chain` only accepts `Promise<U>` per current type.
+`Trail` encapsulates the success and error rails of a workflow in one go. You build the happy path with `Trail.from(initialData)` and `chain` steps, and `run` executes the entire workflow at once. If every step succeeds it stays on the success rail and returns the final value, if any step throws or rejects it switches to the error rail, short-circuits the remaining steps, and returns the first error as a single `Result`.
 
 ### `Trail` Usage
 
