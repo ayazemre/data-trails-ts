@@ -1,6 +1,6 @@
 {
   "name": "data-trails",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "description": "Railway oriented programming building blocks.",
   "keywords": [
     "data trail",
@@ -35,12 +35,14 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "test": "node --test tests/**",
     "build": "rolldown -c",
     "lint": "oxlint",
-    "format": "oxfmt"
+    "format": "oxfmt",
+    "test": "dotenvx run -- node --test-global-setup=./tests/setup.ts --test",
+    "test:all": "npm run test -- tests/index.test.ts"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "^2.23.0",
     "@types/node": "^26.2.0",
     "oxfmt": "^0.63.0",
     "oxlint": "^1.78.0",

@@ -1,0 +1,43 @@
+name: Integrity
+on:
+  workflow_call:
+    outputs:
+      current_version:
+        description: Current package version from package.json
+        value: ${{ jobs.integrity.outputs.current_version }}
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.export_version.outputs.current_version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Check CHANGELOG and version sync
+        run: |
+          set -e
+          PACKAGE_VERSION=$(awk -F\" '/"version"/{print $4; exit}' package.json)
+          echo "Package version: $PACKAGE_VERSION"
+          if ! grep -q "## \[$PACKAGE_VERSION\]" CHANGELOG.md; then
+            echo "Error: CHANGELOG.md is missing entry for version [$PACKAGE_VERSION]"
+            echo "Add '## [$PACKAGE_VERSION] - YYYY-MM-DD' to CHANGELOG.md"
+            exit 1
+          fi
+          echo "✓ CHANGELOG.md has entry for $PACKAGE_VERSION"
+      - name: Export current package version
+        id: export_version
+        run: |
+          CURRENT_VERSION=$(awk -F\" '/"version"/{print $4; exit}' package.json)
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Exported current_version=$CURRENT_VERSION"

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.8.0] - 2026-09-07
+
+- Simplify `Trail` to async-only with `initialData` first: `Trail.from<T>(initialData: T)`, `chain<U>((value: T) => Promise<U>)`, `run(): Promise<Result<T, Error>>` and always-await `run` via `Result.from`.
+- Unify `Result` to `Result.from` with `then` detection and `Result.void`/`wrap` semantics, remove `Result.sync`/`async` split.
+- Update documentation and tests for async-only trail including empty, batch and immutability cases.
+
 ## [0.7.1] - 2026-08-18
 
 - Added documentation CLI tool with section filtering (--documentation).

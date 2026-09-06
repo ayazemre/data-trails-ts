@@ -1,6 +1,11 @@
 name: Publish to NPM
 on:
   workflow_call:
+    inputs:
+      current_version:
+        description: Current package version from integrity
+        required: true
+        type: string
 jobs:
   publish-to-npm:
     runs-on: ubuntu-latest
@@ -13,14 +18,31 @@ jobs:
         with:
           node-version: "latest"
           registry-url: "https://registry.npmjs.org"
+          cache: npm
 
       - name: Install Dependencies
         run: npm ci
+
+      - name: Check version
+        id: version_check
+        run: |
+          CURRENT_VERSION="${{ inputs.current_version }}"
+          PUBLISHED_VERSION=$(npm view data-trails version 2>/dev/null || echo "0.0.0")
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "published_version=$PUBLISHED_VERSION" >> $GITHUB_OUTPUT
+          if [ "$(printf '%s\n' "$PUBLISHED_VERSION" "$CURRENT_VERSION" | sort -V | head -n1)" = "$PUBLISHED_VERSION" ] && [ "$PUBLISHED_VERSION" != "$CURRENT_VERSION" ]; then
+            echo "Version check passed: $CURRENT_VERSION > $PUBLISHED_VERSION"
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version check failed or not higher: $CURRENT_VERSION vs $PUBLISHED_VERSION"
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build
         run: npm run build
 
       - name: Publish to NPM
+        if: steps.version_check.outputs.should_publish == 'true'
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.DATA_TRAILS_NPM_TOKEN }}

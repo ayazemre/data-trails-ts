@@ -28,23 +28,24 @@ function wrap<T>(value: T): T extends Error ? Result<never, T> : Result<T, never
   } as any;
 }
 
-function sync<T>(fn: () => T): Result<T, Error> {
+function from<T>(fn: () => Promise<T>): Promise<Result<T, Error>>;
+function from<T>(fn: () => T): Result<T, Error>;
+function from<T>(fn: () => T | Promise<T>): Result<T, Error> | Promise<Result<T, Error>> {
   try {
-    return wrap(fn());
+    const value = fn();
+    if (value != null && typeof (value as Promise<T>).then === "function") {
+      return (value as Promise<T>).then(
+        (resolvedValue) => wrap(resolvedValue),
+        (error) => normalizeError(error),
+      ) as Promise<Result<T, Error>>;
+    }
+    return wrap(value as T);
   } catch (error) {
     return normalizeError(error);
   }
 }
 
-async function async<T>(fn: () => Promise<T>): Promise<Result<T, Error>> {
-  try {
-    return wrap(await fn());
-  } catch (error) {
-    return normalizeError(error);
-  }
-}
-
-export const Result = { async, sync, void: (): Result<void, Error> => wrap(undefined as unknown as void), wrap };
+export const Result = { from, void: (): Result<void, Error> => wrap(undefined as unknown as void), wrap };
 
 export type Result<T, E = Error> = {
   unwrap(): T;
