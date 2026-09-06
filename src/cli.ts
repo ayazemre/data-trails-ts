@@ -9,7 +9,7 @@ Usage:
   $ npx data-trails --documentation
 
 Options:
-  --documentation  Render all sections, or a comma-separated list of sections
+  --documentation  Render documentation
   --help           Show this help menu`);
 }
 

@@ -109,7 +109,7 @@ async function getUser(id: string) {
 
 ## Core Concept: `DataTrail`
 
-The `DataTrail` utility allows you to chain multiple operations. If any step fails (either by returning an error Result or throwing an exception), the trail short-circuits and returns the first error; subsequent steps are not executed.
+The `DataTrail` utility allows you to chain multiple operations. If any step fails (either by returning an Error object or throwing an exception), the trail short-circuits and returns the first error; subsequent steps are not executed. Chain functions should return raw values and signal failure by throwing or returning an Error. Do not return a Result from a chain step, it will be treated as a success value.
 
 ### `DataTrail` Usage
 

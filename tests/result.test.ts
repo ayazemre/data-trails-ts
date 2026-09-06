@@ -43,7 +43,7 @@ describe("Result", () => {
   test("Sync Void Success", async () => {
     const result = Result.sync(() => {});
 
-    equal(result.unwrap(), null);
+    equal(result.unwrap(), undefined);
     throws(() => result.unwrapError());
     equal(result.isError(), false);
   });
@@ -51,7 +51,7 @@ describe("Result", () => {
   test("Void Result", async () => {
     const result = Result.void();
 
-    equal(result.unwrap(), null);
+    equal(result.unwrap(), undefined);
     throws(() => result.unwrapError());
     equal(result.isError(), false);
   });

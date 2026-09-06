@@ -19,6 +19,9 @@
     "type": "git",
     "url": "git+https://github.com/ayazemre/data-trails"
   },
+  "bin": {
+    "data-trails": "./dist/cli.js"
+  },
   "files": [
     "dist"
   ],
